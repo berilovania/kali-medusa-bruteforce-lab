@@ -191,8 +191,11 @@ Esse é um dos resultados mais críticos do laboratório:
 Este laboratório demonstra:
 
 ✔ como conduzir testes de força bruta com Medusa
+
 ✔ como identificar credenciais fracas em múltiplos serviços
+
 ✔ como explorar vetores de ataque reais em um ambiente vulnerável
+
 ✔ como documentar a operação com evidências e boas práticas
 
 O projeto foi elaborado como parte do Bootcamp **Santander Cybersegurança 2025** (DIO), com foco em práticas reais de segurança ofensiva utilizando ferramentas profissionais.
