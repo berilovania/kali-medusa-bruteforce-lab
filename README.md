@@ -5,48 +5,98 @@ Autor: **Matheus Santos (berilovania)**
 ---
 
 ## 📘 Sobre o Projeto
-Este laboratório foi criado com o objetivo de estudar, documentar e demonstrar ataques de **força bruta** e **password spraying** em ambiente controlado, utilizando:
+Este laboratório foi desenvolvido para estudar, demonstrar e documentar ataques de **força bruta** e **password spraying** em um ambiente controlado utilizando:
 
 - **Kali Linux** (máquina atacante)  
-- **Metasploitable 2** (máquina alvo)  
+- **Metasploitable 2** como alvo vulnerável  
 - **DVWA – Damn Vulnerable Web Application**  
-- **Medusa** como principal ferramenta de brute-force  
+- **Medusa** como ferramenta principal de brute force  
+- **Nmap** e **enum4linux** para enumeração  
 
-Toda a prática foi realizada em **máquinas virtuais isoladas**, para fins educacionais.
-
----
-
-## 🖥️ Ambiente Utilizado
-| Componente | Descrição |
-|-----------|-----------|
-| Atacante | Kali Linux |
-| Alvo | Metasploitable 2 + DVWA |
-| Rede | Host-Only |
-| IP Alvo | **192.168.0.3** |
+**Nenhuma parte deste projeto deve ser utilizada fora de ambientes de teste controlados.**
 
 ---
 
-## ⚡ Ataques Realizados
+## 🖥️ Arquitetura do Ambiente
 
-### 1️⃣ Enumeração com Nmap
+O laboratório utiliza duas máquinas virtuais:
+
+| Função | Máquina | IP (exemplo) |
+|-------|---------|----------------|
+| Atacante | Kali Linux | `<IP-KALI>` |
+| Alvo | Metasploitable 2 + DVWA | `<TARGET_IP>` |
+
+> Substitua `<TARGET_IP>` pelo IP da sua máquina Metasploitable na rede Host-Only.
+
+---
+
+## ⚡ Técnicas Exploradas
+
+### **1️⃣ Enumeração com Nmap**
+Descobre portas abertas, serviços e versões:
+
 ```bash
-nmap -sS -sV -O -p- 192.168.0.3
+nmap -sS -sV -O -p- <TARGET_IP> -oN evidence/nmap_full.txt
 ````
 
-### 2️⃣ Brute Force — FTP (Medusa)
+---
+
+### **2️⃣ Brute Force FTP — Medusa**
+
+Força bruta no serviço FTP usando uma wordlist simples:
 
 ```bash
-medusa -h 192.168.0.3 -u ftp -P wordlists/small-words.txt -M ftp -n 21 -f
+medusa -h <TARGET_IP> \
+       -u ftp \
+       -P wordlists/small-passwords.txt \
+       -M ftp -f \
+       -O evidence/ftp_medusa_output.txt
 ```
 
-### 3️⃣ Brute Force — Formulário DVWA (Python)
-
-Script usado: `scripts/dvwa_form_bruteforce.py`
-
-### 4️⃣ Password Spraying — SMB
+Para múltiplos usuários:
 
 ```bash
-medusa -h 192.168.0.3 -U wordlists/users.txt -P wordlists/common-passwords.txt -M smbnt -f
+medusa -h <TARGET_IP> \
+       -U wordlists/users.txt \
+       -P wordlists/small-passwords.txt \
+       -M ftp -f \
+       -O evidence/ftp_multi_output.txt
+```
+
+---
+
+### **3️⃣ Brute Force no DVWA — Medusa (Web Form)**
+
+O DVWA exibe a frase de erro **“Login failed”** ao inserir credenciais incorretas.
+Podemos usar isso para detectar falhas e sucessos.
+
+```bash
+medusa -h <TARGET_IP> \
+  -u admin \
+  -P wordlists/small-passwords.txt \
+  -M web-form \
+  -m FORM:"/dvwa/login.php:username=^USER^&password=^PASS^:F=Login failed:S=Welcome" \
+  -O evidence/dvwa_medusa_output.txt
+```
+
+---
+
+### **4️⃣ Password Spraying SMB — Medusa**
+
+Primeiro, enumere usuários SMB:
+
+```bash
+enum4linux -a <TARGET_IP> | tee evidence/enum4linux_output.txt
+```
+
+Depois, tente password spraying:
+
+```bash
+medusa -h <TARGET_IP> \
+       -U wordlists/users.txt \
+       -P wordlists/common-passwords.txt \
+       -M smbnt -f \
+       -O evidence/smb_medusa_output.txt
 ```
 
 ---
@@ -58,48 +108,70 @@ kali-medusa-bruteforce-lab/
 ├── README.md
 ├── commands.md
 ├── wordlists/
-├── scripts/
+│   ├── small-passwords.txt
+│   ├── common-passwords.txt
+│   └── users.txt
 ├── images/
-├── report/
-└── evidence/
+├── evidence/
+└── report/
 ```
 
 ---
 
 ## 🧪 Evidências
 
-As capturas de tela e logs estão nas pastas:
+As saídas dos ataques, scans e testes ficam armazenadas na pasta:
 
-* `/images`
-* `/evidence`
+```
+/evidence
+```
 
-Incluindo:
+Exemplos:
 
-* Resultados do Medusa
-* Saída dos scripts
-* Enumeração com Nmap
-* Validação do acesso obtido
+* `nmap_full.txt`
+* `ftp_medusa_output.txt`
+* `dvwa_medusa_output.txt`
+* `enum4linux_output.txt`
+* `smb_medusa_output.txt`
+
+Capturas de tela ficam em:
+
+```
+/images
+```
 
 ---
 
-## 🔒 Recomendações de Mitigação
+## 🔒 Mitigações Recomendadas
 
-Durante o laboratório, identifiquei boas práticas para mitigar ataques de brute-force:
+Durante a análise, foram identificadas boas práticas para reduzir riscos de ataques de força bruta:
 
-* Implementar **MFA**
-* Utilizar **SFTP/SSH** no lugar de FTP
-* Habilitar **bloqueio por tentativas incorretas**
-* Aplicar **rate limiting** em formulários
-* Usar **hashes fortes** (bcrypt / Argon2)
+### **Aplicações Web**
+
+* Implementar **rate limiting**
+* Habilitar **CAPTCHA**
+* Bloqueio temporário após tentativas inválidas
+* Hash seguro (bcrypt/Argon2)
+
+### **Serviços de Rede**
+
+* Desabilitar serviços desnecessários (como FTP)
+* Substituir FTP por **SFTP/SSH**
+* Habilitar políticas de **senha forte**
 * Desabilitar **SMBv1**
-* Monitorar logs e eventos de autenticação
+
+### **Medidas Gerais**
+
+* Aplicar **MFA**
+* Monitoramento contínuo de logs
+* Políticas de bloqueio por tentativas
 
 ---
 
 ## ⚠️ Aviso Legal
 
-Este projeto foi executado **exclusivamente em ambiente controlado**.
-Nunca realize testes deste tipo em redes ou sistemas sem autorização explícita.
+Este projeto foi desenvolvido **exclusivamente em ambiente isolado de laboratório**, utilizando máquinas virtuais vulneráveis.
+**Nunca execute técnicas de brute force ou enumeração em sistemas reais sem autorização explícita.**
 
 ---
 
