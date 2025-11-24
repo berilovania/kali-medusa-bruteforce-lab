@@ -1,6 +1,11 @@
-admin
-user
-guest
-service
-ftp
+root
 msfadmin
+user
+postgres
+ftp
+service
+daemon
+backup
+mysql
+tomcat55
+proftpd

