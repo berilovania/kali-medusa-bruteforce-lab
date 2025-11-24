@@ -37,7 +37,7 @@ Os objetivos do projeto incluem:
 * **Metasploitable:** ambiente inseguro para testes
 
 O endereço IP do alvo (`<TARGET_IP>`) deve ser ajustado conforme o seu ambiente.
-Neste laboratório, o IP utilizado foi **192.168.0.3**, mas o README é genérico.
+Neste laboratório, o IP utilizado foi **192.168.0.3**.
 
 ---
 
@@ -201,7 +201,7 @@ O projeto foi elaborado como parte do Bootcamp **Santander Cybersegurança 2025*
 
 # 🏆 **Créditos**
 
-Projeto desenvolvido por **Matheus Santos**, utilizando:
+Projeto desenvolvido por **Matheus Santos Caldas**, utilizando as seguintes ferramentas:
 
 * Kali Linux
 * Medusa
