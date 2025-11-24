@@ -1,56 +1,110 @@
-# Kali + Medusa Brute-Force Lab
+# 🔐 Kali + Medusa Brute-Force Lab  
+Projeto prático de Cibersegurança — Bootcamp **Santander Cybersegurança 2025** (DIO)  
+Autor: **Matheus Santos (berilovania)**  
 
+---
 
-**Resumo rápido:** Projeto de laboratório para simular ataques de força bruta (FTP, Web form, SMB) usando Kali Linux e Medusa contra ambientes vulneráveis (Metasploitable2 / DVWA). Propósito educacional em ambiente controlado.
+## 📘 Sobre o Projeto
+Este laboratório foi criado com o objetivo de estudar, documentar e demonstrar ataques de **força bruta** e **password spraying** em ambiente controlado, utilizando:
 
+- **Kali Linux** (máquina atacante)  
+- **Metasploitable 2** (máquina alvo)  
+- **DVWA – Damn Vulnerable Web Application**  
+- **Medusa** como principal ferramenta de brute-force  
 
-**Alvo (exemplo usado neste repositório):**
+Toda a prática foi realizada em **máquinas virtuais isoladas**, para fins educacionais.
 
+---
 
-## Conteúdo
-- `scripts/` — scripts usados (DVWA brute-force, helpers).
-- `wordlists/` — wordlists usadas.
-- `images/` — screenshots.
-- `commands.md` — lista dos comandos utilizados.
-- `report/` — relatório final com recomendações.
+## 🖥️ Ambiente Utilizado
+| Componente | Descrição |
+|-----------|-----------|
+| Atacante | Kali Linux |
+| Alvo | Metasploitable 2 + DVWA |
+| Rede | Host-Only |
+| IP Alvo | **192.168.0.3** |
 
+---
 
-## Setup do ambiente (resumo)
-1. VMs: Kali Linux (atacante) e Metasploitable2/DVWA (alvo) em VirtualBox.
-2. Rede: Host-only / Internal Network. Neste repo usamos: `192.168.0.3` como IP alvo.
-3. DVWA: configure DB e ajuste security para **low** para testes.
+## ⚡ Ataques Realizados
 
-
-## Passos executados (resumo)
-1. Enumeração com Nmap:
+### 1️⃣ Enumeração com Nmap
 ```bash
 nmap -sS -sV -O -p- 192.168.0.3
-```
-2. Brute force FTP com Medusa:
+````
+
+### 2️⃣ Brute Force — FTP (Medusa)
+
 ```bash
 medusa -h 192.168.0.3 -u ftp -P wordlists/small-words.txt -M ftp -n 21 -f
 ```
-3. Brute force de formulário DVWA (script `scripts/dvwa_form_bruteforce.py`)
-4. Password spraying SMB:
+
+### 3️⃣ Brute Force — Formulário DVWA (Python)
+
+Script usado: `scripts/dvwa_form_bruteforce.py`
+
+### 4️⃣ Password Spraying — SMB
+
 ```bash
 medusa -h 192.168.0.3 -U wordlists/users.txt -P wordlists/common-passwords.txt -M smbnt -f
 ```
 
+---
 
-## Evidências
-- `evidence/ftp_success.txt`
-- `evidence/dvwa_success.txt`
-- `evidence/smb_success.txt`
-- screenshots em `images/`
+## 📂 Estrutura do Repositório
 
+```
+kali-medusa-bruteforce-lab/
+├── README.md
+├── commands.md
+├── wordlists/
+├── scripts/
+├── images/
+├── report/
+└── evidence/
+```
 
-## Mitigações recomendadas
-- MFA, políticas de senha fortes, bloqueios por tentativas, SFTP/SSH, desabilitar SMBv1, WAF, monitoramento de logs.
+---
 
+## 🧪 Evidências
 
-## Observações éticas e legais
-Este projeto foi executado **exclusivamente** em VMs controladas (Kali + Metasploitable/DVWA) com fins educacionais. Não execute estes procedimentos em sistemas sem autorização expressa.
+As capturas de tela e logs estão nas pastas:
 
+* `/images`
+* `/evidence`
 
-## Autor
-Matheus Santos — Bootcamp Santander Cybersegurança 2025 (DIO)
+Incluindo:
+
+* Resultados do Medusa
+* Saída dos scripts
+* Enumeração com Nmap
+* Validação do acesso obtido
+
+---
+
+## 🔒 Recomendações de Mitigação
+
+Durante o laboratório, identifiquei boas práticas para mitigar ataques de brute-force:
+
+* Implementar **MFA**
+* Utilizar **SFTP/SSH** no lugar de FTP
+* Habilitar **bloqueio por tentativas incorretas**
+* Aplicar **rate limiting** em formulários
+* Usar **hashes fortes** (bcrypt / Argon2)
+* Desabilitar **SMBv1**
+* Monitorar logs e eventos de autenticação
+
+---
+
+## ⚠️ Aviso Legal
+
+Este projeto foi executado **exclusivamente em ambiente controlado**.
+Nunca realize testes deste tipo em redes ou sistemas sem autorização explícita.
+
+---
+
+## ✨ Autor
+
+**Matheus Santos (berilovania)**
+Bootcamp Santander Cybersegurança 2025 — DIO
+GitHub: [https://github.com/berilovania](https://github.com/berilovania)
